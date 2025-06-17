@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Node.js Demo App</title>
+</head>
+<body>
+  <h1>Welcome to the Node.js Demo App</h1>
+  <p><button onclick="checkHealth()">Check /health</button></p>
+  <p><button onclick="loadUsers()">Load Users</button></p>
+  <pre id="output"></pre>
+
+  <script>
+    function checkHealth() {
+      fetch('/health')
+        .then(res => res.json())
+        .then(data => document.getElementById('output').textContent = JSON.stringify(data, null, 2));
+    }
+
+    function loadUsers() {
+      fetch('/users')
+        .then(res => res.json())
+        .then(data => document.getElementById('output').textContent = JSON.stringify(data, null, 2));
+    }
+  </script>
+</body>
+</html>
+
