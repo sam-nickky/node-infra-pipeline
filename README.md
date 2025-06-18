@@ -48,6 +48,34 @@ terraform apply
 
 After successful apply, AWS resources will be provisioned automatically as defined in  Terraform code.
 
+## How the CI/CD pipeline works and how to trigger it.
 
+The CI/CD pipeline automates the process of testing, building, and deploying your Node.js application to AWS EC2 using Jenkins.
+
+### Workflow
+
+1. **Code Push to GitHub/GitLab**
+2. **Jenkins Trigger**  
+   (via Webhook )
+
+### Pipeline Stages
+
+- **Test Stage:** Runs unit tests
+- **Build Stage:** Creates Docker image
+- **Push Stage:** Pushes image to Amazon ECR
+- **Deploy Stage:** Uses Terraform + SSH or Ansible to update EC2 instances
+- **Rollback Stage:** On failure, reverts to previous image
+
+### Triggering the Pipeline
+
+- **Automatically:** Through webhooks on Git push
+- **Manually:**  
+  From Jenkins dashboard → select job → click **“Build Now”**
+
+### Jenkinsfile
+
+You can find the working `Jenkinsfile` in the repository above.  
+ It has been tested and is working as expected.  
+The deployed application is accessible via the web.
 
   
