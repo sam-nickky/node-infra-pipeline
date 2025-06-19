@@ -39,6 +39,7 @@ pipeline {
         ]) {
           dir("${TF_DIR}") {
             sh '''
+              terraform destroy -auto-approve
               terraform init -input=false
               terraform plan -input=false -out=tfplan
               terraform apply -input=false -auto-approve tfplan
@@ -57,7 +58,7 @@ pipeline {
             passwordVariable: 'AWS_SECRET_ACCESS_KEY'
           )
         ]) {
-          dir('node-demo-app/app') {
+          dir('node-demo-app/') {
             sh '''
               aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URI
 
@@ -73,10 +74,10 @@ pipeline {
 
   post {
     success {
-      echo " Deployment successful."
+      echo "eployment successful."
     }
     failure {
-      echo " Deployment failed. Check logs."
+      echo "eployment failed. Check logs."
     }
   }
 }
