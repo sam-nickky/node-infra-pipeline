@@ -1,0 +1,1157 @@
+Started by user sampath
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/NodeApp-CICD
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential git-crd
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/NodeApp-CICD/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/sam-nickky/node-infra-pipeline.git # timeout=10
+Fetching upstream changes from https://github.com/sam-nickky/node-infra-pipeline.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+using GIT_ASKPASS to set credentials 
+ > git fetch --tags --force --progress -- https://github.com/sam-nickky/node-infra-pipeline.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 4bc6dc458d81f800d0b31fc232434e81390b3edf (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 4bc6dc458d81f800d0b31fc232434e81390b3edf # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main 4bc6dc458d81f800d0b31fc232434e81390b3edf # timeout=10
+Commit message: "Update Jenkinsfile"
+ > git rev-list --no-walk 4bc6dc458d81f800d0b31fc232434e81390b3edf # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Install & Test)
+[Pipeline] dir
+Running in /var/lib/jenkins/workspace/NodeApp-CICD/node-demo-app/app
+[Pipeline] {
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] sh
++ npm install
+
+up to date, audited 383 packages in 1s
+
+63 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+[Pipeline] sh
++ npm test
+
+> demo-app@1.0.0 test
+> jest
+
+PASS test/app.test.js
+  GET /health
+    ✓ should return status ok (31 ms)
+  GET /users
+    ✓ should return list of users (4 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        0.377 s, estimated 1 s
+Ran all test suites.
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Terraform Deploy Infra & App)
+[Pipeline] withCredentials
+Masking supported pattern matches of $AWS_SECRET_ACCESS_KEY
+[Pipeline] {
+[Pipeline] dir
+Running in /var/lib/jenkins/workspace/NodeApp-CICD/node-demo-app/terraform
+[Pipeline] {
+[Pipeline] sh
++ terraform destroy -auto-approve
+[0m[1mmodule.ecr.aws_ecr_repository.app: Refreshing state... [id=node-demo-app][0m
+[0m[1mmodule.vpc.aws_eip.nat: Refreshing state... [id=eipalloc-056737a6dfcf6c9a7][0m
+[0m[1mmodule.iam.aws_iam_role.ec2_role: Refreshing state... [id=ec2-role-for-app][0m
+[0m[1mmodule.vpc.aws_vpc.main: Refreshing state... [id=vpc-0aabcdbf8264d3480][0m
+[0m[1mmodule.vpc.aws_internet_gateway.igw: Refreshing state... [id=igw-00c716ed4630565ef][0m
+[0m[1mmodule.vpc.aws_subnet.private[1]: Refreshing state... [id=subnet-07ab472f27a3dd112][0m
+[0m[1mmodule.alb.aws_security_group.alb_sg: Refreshing state... [id=sg-03e195317cad23953][0m
+[0m[1mmodule.vpc.aws_subnet.public[1]: Refreshing state... [id=subnet-018c54d1e7bb164bc][0m
+[0m[1mmodule.alb.aws_lb_target_group.app_tg: Refreshing state... [id=arn:aws:elasticloadbalancing:eu-north-1:091110283484:targetgroup/app-tg/d9e8788a0bf30d74][0m
+[0m[1mmodule.vpc.aws_subnet.public[0]: Refreshing state... [id=subnet-0a40e567dfc9edc72][0m
+[0m[1mmodule.vpc.aws_subnet.private[0]: Refreshing state... [id=subnet-032738c1756e5f9ba][0m
+[0m[1mmodule.vpc.aws_route_table.public: Refreshing state... [id=rtb-090b8b6a08b871f41][0m
+[0m[1mmodule.rds.aws_db_subnet_group.this: Refreshing state... [id=app-db-subnet-group][0m
+[0m[1mmodule.ec2.aws_security_group.app_sg: Refreshing state... [id=sg-0beeef5fe2cd9386f][0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Refreshing state... [id=nat-03c98ccfea78211ff][0m
+[0m[1mmodule.alb.aws_lb.app_alb: Refreshing state... [id=arn:aws:elasticloadbalancing:eu-north-1:091110283484:loadbalancer/app/app-alb/f485e6f8cbe5a4ef][0m
+[0m[1mmodule.vpc.aws_route_table_association.public_assoc[0]: Refreshing state... [id=rtbassoc-0cc266c1780d65cff][0m
+[0m[1mmodule.vpc.aws_route_table_association.public_assoc[1]: Refreshing state... [id=rtbassoc-09ad03f4b6a300d45][0m
+[0m[1mmodule.vpc.aws_route_table.private: Refreshing state... [id=rtb-00eb9d7bc2aac8575][0m
+[0m[1mmodule.alb.aws_lb_listener.http: Refreshing state... [id=arn:aws:elasticloadbalancing:eu-north-1:091110283484:listener/app/app-alb/f485e6f8cbe5a4ef/aca11aa6a243cc67][0m
+[0m[1mmodule.rds.aws_security_group.db_sg: Refreshing state... [id=sg-06fa917a891d2a3de][0m
+[0m[1mmodule.ec2.aws_launch_template.app: Refreshing state... [id=lt-076e73e3fd7a0d5d6][0m
+[0m[1mmodule.vpc.aws_route_table_association.private_assoc[1]: Refreshing state... [id=rtbassoc-052edfead6423be71][0m
+[0m[1mmodule.vpc.aws_route_table_association.private_assoc[0]: Refreshing state... [id=rtbassoc-05fbe5ce29715a089][0m
+[0m[1mmodule.ec2.aws_autoscaling_group.app_asg: Refreshing state... [id=terraform-20250618020520838000000006][0m
+[0m[1mmodule.rds.aws_db_instance.this: Refreshing state... [id=db-UOSIHMP4BTIQY5E6EHJIQHNEY4][0m
+[0m[1mmodule.iam.aws_iam_role_policy_attachment.ssm: Refreshing state... [id=ec2-role-for-app-20250618020500320100000001][0m
+[0m[1mmodule.iam.aws_iam_instance_profile.this: Refreshing state... [id=ec2-instance-profile][0m
+[0m[1mmodule.iam.aws_iam_role_policy_attachment.ecr: Refreshing state... [id=ec2-role-for-app-20250618020500501900000002][0m
+
+Changes to Outputs:
+  [31m-[0m[0m vpc_id = "vpc-0aabcdbf8264d3480" [90m-> null[0m[0m
+
+You can apply this plan to save these new output values to the Terraform
+state, without changing any real infrastructure.
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mArgument is deprecated[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  with module.vpc.aws_eip.nat,
+[33m│[0m [0m  on modules/vpc/main.tf line 62, in resource "aws_eip" "nat":
+[33m│[0m [0m  62:   vpc = [4mtrue[0m[0m
+[33m│[0m [0m
+[33m│[0m [0mvpc is deprecated. Use domain instead.
+[33m╵[0m[0m
+[0m[1m[32m
+Destroy complete! Resources: 0 destroyed.
+[0m+ terraform init -input=false
+
+[0m[1mInitializing the backend...[0m
+[0m[1mInitializing modules...[0m
+
+[0m[1mInitializing provider plugins...[0m
+- Reusing previous version of hashicorp/aws from the dependency lock file
+- Using previously-installed hashicorp/aws v5.100.0
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
++ terraform plan -input=false -out=tfplan
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [32m+[0m create[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.alb.aws_lb.app_alb[0m will be created
+[0m  [32m+[0m[0m resource "aws_lb" "app_alb" {
+      [32m+[0m[0m arn                                                          = (known after apply)
+      [32m+[0m[0m arn_suffix                                                   = (known after apply)
+      [32m+[0m[0m client_keep_alive                                            = 3600
+      [32m+[0m[0m desync_mitigation_mode                                       = "defensive"
+      [32m+[0m[0m dns_name                                                     = (known after apply)
+      [32m+[0m[0m drop_invalid_header_fields                                   = false
+      [32m+[0m[0m enable_deletion_protection                                   = false
+      [32m+[0m[0m enable_http2                                                 = true
+      [32m+[0m[0m enable_tls_version_and_cipher_suite_headers                  = false
+      [32m+[0m[0m enable_waf_fail_open                                         = false
+      [32m+[0m[0m enable_xff_client_port                                       = false
+      [32m+[0m[0m enable_zonal_shift                                           = false
+      [32m+[0m[0m enforce_security_group_inbound_rules_on_private_link_traffic = (known after apply)
+      [32m+[0m[0m id                                                           = (known after apply)
+      [32m+[0m[0m idle_timeout                                                 = 60
+      [32m+[0m[0m internal                                                     = false
+      [32m+[0m[0m ip_address_type                                              = (known after apply)
+      [32m+[0m[0m load_balancer_type                                           = "application"
+      [32m+[0m[0m name                                                         = "app-alb"
+      [32m+[0m[0m name_prefix                                                  = (known after apply)
+      [32m+[0m[0m preserve_host_header                                         = false
+      [32m+[0m[0m security_groups                                              = (known after apply)
+      [32m+[0m[0m subnets                                                      = (known after apply)
+      [32m+[0m[0m tags                                                         = {
+          [32m+[0m[0m "Name" = "alb"
+        }
+      [32m+[0m[0m tags_all                                                     = {
+          [32m+[0m[0m "Name" = "alb"
+        }
+      [32m+[0m[0m vpc_id                                                       = (known after apply)
+      [32m+[0m[0m xff_header_processing_mode                                   = "append"
+      [32m+[0m[0m zone_id                                                      = (known after apply)
+    }
+
+[1m  # module.alb.aws_lb_listener.http[0m will be created
+[0m  [32m+[0m[0m resource "aws_lb_listener" "http" {
+      [32m+[0m[0m arn                                                                   = (known after apply)
+      [32m+[0m[0m id                                                                    = (known after apply)
+      [32m+[0m[0m load_balancer_arn                                                     = (known after apply)
+      [32m+[0m[0m port                                                                  = 80
+      [32m+[0m[0m protocol                                                              = "HTTP"
+      [32m+[0m[0m routing_http_request_x_amzn_mtls_clientcert_header_name               = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_mtls_clientcert_issuer_header_name        = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_mtls_clientcert_leaf_header_name          = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_mtls_clientcert_serial_number_header_name = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_mtls_clientcert_subject_header_name       = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_mtls_clientcert_validity_header_name      = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_tls_cipher_suite_header_name              = (known after apply)
+      [32m+[0m[0m routing_http_request_x_amzn_tls_version_header_name                   = (known after apply)
+      [32m+[0m[0m routing_http_response_access_control_allow_credentials_header_value   = (known after apply)
+      [32m+[0m[0m routing_http_response_access_control_allow_headers_header_value       = (known after apply)
+      [32m+[0m[0m routing_http_response_access_control_allow_methods_header_value       = (known after apply)
+      [32m+[0m[0m routing_http_response_access_control_allow_origin_header_value        = (known after apply)
+      [32m+[0m[0m routing_http_response_access_control_expose_headers_header_value      = (known after apply)
+      [32m+[0m[0m routing_http_response_access_control_max_age_header_value             = (known after apply)
+      [32m+[0m[0m routing_http_response_content_security_policy_header_value            = (known after apply)
+      [32m+[0m[0m routing_http_response_server_enabled                                  = (known after apply)
+      [32m+[0m[0m routing_http_response_strict_transport_security_header_value          = (known after apply)
+      [32m+[0m[0m routing_http_response_x_content_type_options_header_value             = (known after apply)
+      [32m+[0m[0m routing_http_response_x_frame_options_header_value                    = (known after apply)
+      [32m+[0m[0m ssl_policy                                                            = (known after apply)
+      [32m+[0m[0m tags_all                                                              = (known after apply)
+      [32m+[0m[0m tcp_idle_timeout_seconds                                              = (known after apply)
+
+      [32m+[0m[0m default_action {
+          [32m+[0m[0m order            = (known after apply)
+          [32m+[0m[0m target_group_arn = (known after apply)
+          [32m+[0m[0m type             = "forward"
+        }
+    }
+
+[1m  # module.alb.aws_lb_target_group.app_tg[0m will be created
+[0m  [32m+[0m[0m resource "aws_lb_target_group" "app_tg" {
+      [32m+[0m[0m arn                                = (known after apply)
+      [32m+[0m[0m arn_suffix                         = (known after apply)
+      [32m+[0m[0m connection_termination             = (known after apply)
+      [32m+[0m[0m deregistration_delay               = "300"
+      [32m+[0m[0m id                                 = (known after apply)
+      [32m+[0m[0m ip_address_type                    = (known after apply)
+      [32m+[0m[0m lambda_multi_value_headers_enabled = false
+      [32m+[0m[0m load_balancer_arns                 = (known after apply)
+      [32m+[0m[0m load_balancing_algorithm_type      = (known after apply)
+      [32m+[0m[0m load_balancing_anomaly_mitigation  = (known after apply)
+      [32m+[0m[0m load_balancing_cross_zone_enabled  = (known after apply)
+      [32m+[0m[0m name                               = "app-tg"
+      [32m+[0m[0m name_prefix                        = (known after apply)
+      [32m+[0m[0m port                               = 3000
+      [32m+[0m[0m preserve_client_ip                 = (known after apply)
+      [32m+[0m[0m protocol                           = "HTTP"
+      [32m+[0m[0m protocol_version                   = (known after apply)
+      [32m+[0m[0m proxy_protocol_v2                  = false
+      [32m+[0m[0m slow_start                         = 0
+      [32m+[0m[0m tags_all                           = (known after apply)
+      [32m+[0m[0m target_type                        = "instance"
+      [32m+[0m[0m vpc_id                             = (known after apply)
+
+      [32m+[0m[0m health_check {
+          [32m+[0m[0m enabled             = true
+          [32m+[0m[0m healthy_threshold   = 2
+          [32m+[0m[0m interval            = 30
+          [32m+[0m[0m matcher             = "200"
+          [32m+[0m[0m path                = "/health"
+          [32m+[0m[0m port                = "traffic-port"
+          [32m+[0m[0m protocol            = "HTTP"
+          [32m+[0m[0m timeout             = 5
+          [32m+[0m[0m unhealthy_threshold = 2
+        }
+    }
+
+[1m  # module.alb.aws_security_group.alb_sg[0m will be created
+[0m  [32m+[0m[0m resource "aws_security_group" "alb_sg" {
+      [32m+[0m[0m arn                    = (known after apply)
+      [32m+[0m[0m description            = "Allow HTTP and HTTPS access"
+      [32m+[0m[0m egress                 = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m from_port        = 0
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "-1"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 0
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m id                     = (known after apply)
+      [32m+[0m[0m ingress                = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m from_port        = 443
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 443
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m from_port        = 80
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 80
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m name                   = "alb-sg"
+      [32m+[0m[0m name_prefix            = (known after apply)
+      [32m+[0m[0m owner_id               = (known after apply)
+      [32m+[0m[0m revoke_rules_on_delete = false
+      [32m+[0m[0m tags_all               = (known after apply)
+      [32m+[0m[0m vpc_id                 = (known after apply)
+    }
+
+[1m  # module.ec2.aws_autoscaling_group.app_asg[0m will be created
+[0m  [32m+[0m[0m resource "aws_autoscaling_group" "app_asg" {
+      [32m+[0m[0m arn                              = (known after apply)
+      [32m+[0m[0m availability_zones               = (known after apply)
+      [32m+[0m[0m default_cooldown                 = (known after apply)
+      [32m+[0m[0m desired_capacity                 = 2
+      [32m+[0m[0m force_delete                     = false
+      [32m+[0m[0m force_delete_warm_pool           = false
+      [32m+[0m[0m health_check_grace_period        = 300
+      [32m+[0m[0m health_check_type                = (known after apply)
+      [32m+[0m[0m id                               = (known after apply)
+      [32m+[0m[0m ignore_failed_scaling_activities = false
+      [32m+[0m[0m load_balancers                   = (known after apply)
+      [32m+[0m[0m max_size                         = 3
+      [32m+[0m[0m metrics_granularity              = "1Minute"
+      [32m+[0m[0m min_size                         = 1
+      [32m+[0m[0m name                             = (known after apply)
+      [32m+[0m[0m name_prefix                      = (known after apply)
+      [32m+[0m[0m predicted_capacity               = (known after apply)
+      [32m+[0m[0m protect_from_scale_in            = false
+      [32m+[0m[0m service_linked_role_arn          = (known after apply)
+      [32m+[0m[0m target_group_arns                = (known after apply)
+      [32m+[0m[0m vpc_zone_identifier              = (known after apply)
+      [32m+[0m[0m wait_for_capacity_timeout        = "10m"
+      [32m+[0m[0m warm_pool_size                   = (known after apply)
+
+      [32m+[0m[0m launch_template {
+          [32m+[0m[0m id      = (known after apply)
+          [32m+[0m[0m name    = (known after apply)
+          [32m+[0m[0m version = "$Latest"
+        }
+
+      [32m+[0m[0m tag {
+          [32m+[0m[0m key                 = "Name"
+          [32m+[0m[0m propagate_at_launch = true
+          [32m+[0m[0m value               = "node-app-instance"
+        }
+    }
+
+[1m  # module.ec2.aws_launch_template.app[0m will be created
+[0m  [32m+[0m[0m resource "aws_launch_template" "app" {
+      [32m+[0m[0m arn             = (known after apply)
+      [32m+[0m[0m default_version = (known after apply)
+      [32m+[0m[0m id              = (known after apply)
+      [32m+[0m[0m image_id        = "ami-042b4708b1d05f512"
+      [32m+[0m[0m instance_type   = "t3.micro"
+      [32m+[0m[0m key_name        = "Project1"
+      [32m+[0m[0m latest_version  = (known after apply)
+      [32m+[0m[0m name            = (known after apply)
+      [32m+[0m[0m name_prefix     = "node-app-"
+      [32m+[0m[0m tags_all        = (known after apply)
+
+      [32m+[0m[0m network_interfaces {
+          [32m+[0m[0m associate_public_ip_address = "false"
+          [32m+[0m[0m security_groups             = (known after apply)
+        }
+    }
+
+[1m  # module.ec2.aws_security_group.app_sg[0m will be created
+[0m  [32m+[0m[0m resource "aws_security_group" "app_sg" {
+      [32m+[0m[0m arn                    = (known after apply)
+      [32m+[0m[0m description            = "Allow traffic from ALB"
+      [32m+[0m[0m egress                 = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m from_port        = 0
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "-1"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 0
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m id                     = (known after apply)
+      [32m+[0m[0m ingress                = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = []
+              [32m+[0m[0m from_port        = 3000
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = (known after apply)
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 3000
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m name                   = "app-sg"
+      [32m+[0m[0m name_prefix            = (known after apply)
+      [32m+[0m[0m owner_id               = (known after apply)
+      [32m+[0m[0m revoke_rules_on_delete = false
+      [32m+[0m[0m tags                   = {
+          [32m+[0m[0m "Name" = "node-app-sg"
+        }
+      [32m+[0m[0m tags_all               = {
+          [32m+[0m[0m "Name" = "node-app-sg"
+        }
+      [32m+[0m[0m vpc_id                 = (known after apply)
+    }
+
+[1m  # module.ecr.aws_ecr_repository.app[0m will be created
+[0m  [32m+[0m[0m resource "aws_ecr_repository" "app" {
+      [32m+[0m[0m arn                  = (known after apply)
+      [32m+[0m[0m id                   = (known after apply)
+      [32m+[0m[0m image_tag_mutability = "MUTABLE"
+      [32m+[0m[0m name                 = "node-demo-app"
+      [32m+[0m[0m registry_id          = (known after apply)
+      [32m+[0m[0m repository_url       = (known after apply)
+      [32m+[0m[0m tags                 = {
+          [32m+[0m[0m "Name" = "node-demo-app"
+        }
+      [32m+[0m[0m tags_all             = {
+          [32m+[0m[0m "Name" = "node-demo-app"
+        }
+
+      [32m+[0m[0m image_scanning_configuration {
+          [32m+[0m[0m scan_on_push = true
+        }
+    }
+
+[1m  # module.iam.aws_iam_instance_profile.this[0m will be created
+[0m  [32m+[0m[0m resource "aws_iam_instance_profile" "this" {
+      [32m+[0m[0m arn         = (known after apply)
+      [32m+[0m[0m create_date = (known after apply)
+      [32m+[0m[0m id          = (known after apply)
+      [32m+[0m[0m name        = "ec2-instance-profile"
+      [32m+[0m[0m name_prefix = (known after apply)
+      [32m+[0m[0m path        = "/"
+      [32m+[0m[0m role        = "ec2-role-for-app"
+      [32m+[0m[0m tags_all    = (known after apply)
+      [32m+[0m[0m unique_id   = (known after apply)
+    }
+
+[1m  # module.iam.aws_iam_role.ec2_role[0m will be created
+[0m  [32m+[0m[0m resource "aws_iam_role" "ec2_role" {
+      [32m+[0m[0m arn                   = (known after apply)
+      [32m+[0m[0m assume_role_policy    = jsonencode(
+            {
+              [32m+[0m[0m Statement = [
+                  [32m+[0m[0m {
+                      [32m+[0m[0m Action    = "sts:AssumeRole"
+                      [32m+[0m[0m Effect    = "Allow"
+                      [32m+[0m[0m Principal = {
+                          [32m+[0m[0m Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              [32m+[0m[0m Version   = "2012-10-17"
+            }
+        )
+      [32m+[0m[0m create_date           = (known after apply)
+      [32m+[0m[0m force_detach_policies = false
+      [32m+[0m[0m id                    = (known after apply)
+      [32m+[0m[0m managed_policy_arns   = (known after apply)
+      [32m+[0m[0m max_session_duration  = 3600
+      [32m+[0m[0m name                  = "ec2-role-for-app"
+      [32m+[0m[0m name_prefix           = (known after apply)
+      [32m+[0m[0m path                  = "/"
+      [32m+[0m[0m tags_all              = (known after apply)
+      [32m+[0m[0m unique_id             = (known after apply)
+    }
+
+[1m  # module.iam.aws_iam_role_policy_attachment.ecr[0m will be created
+[0m  [32m+[0m[0m resource "aws_iam_role_policy_attachment" "ecr" {
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      [32m+[0m[0m role       = "ec2-role-for-app"
+    }
+
+[1m  # module.iam.aws_iam_role_policy_attachment.ssm[0m will be created
+[0m  [32m+[0m[0m resource "aws_iam_role_policy_attachment" "ssm" {
+      [32m+[0m[0m id         = (known after apply)
+      [32m+[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      [32m+[0m[0m role       = "ec2-role-for-app"
+    }
+
+[1m  # module.rds.aws_db_instance.this[0m will be created
+[0m  [32m+[0m[0m resource "aws_db_instance" "this" {
+      [32m+[0m[0m address                               = (known after apply)
+      [32m+[0m[0m allocated_storage                     = 20
+      [32m+[0m[0m apply_immediately                     = false
+      [32m+[0m[0m arn                                   = (known after apply)
+      [32m+[0m[0m auto_minor_version_upgrade            = true
+      [32m+[0m[0m availability_zone                     = (known after apply)
+      [32m+[0m[0m backup_retention_period               = 7
+      [32m+[0m[0m backup_target                         = (known after apply)
+      [32m+[0m[0m backup_window                         = (known after apply)
+      [32m+[0m[0m ca_cert_identifier                    = (known after apply)
+      [32m+[0m[0m character_set_name                    = (known after apply)
+      [32m+[0m[0m copy_tags_to_snapshot                 = false
+      [32m+[0m[0m database_insights_mode                = (known after apply)
+      [32m+[0m[0m db_name                               = "nodeapp"
+      [32m+[0m[0m db_subnet_group_name                  = "app-db-subnet-group"
+      [32m+[0m[0m dedicated_log_volume                  = false
+      [32m+[0m[0m delete_automated_backups              = true
+      [32m+[0m[0m domain_fqdn                           = (known after apply)
+      [32m+[0m[0m endpoint                              = (known after apply)
+      [32m+[0m[0m engine                                = "postgres"
+      [32m+[0m[0m engine_lifecycle_support              = (known after apply)
+      [32m+[0m[0m engine_version                        = (known after apply)
+      [32m+[0m[0m engine_version_actual                 = (known after apply)
+      [32m+[0m[0m hosted_zone_id                        = (known after apply)
+      [32m+[0m[0m id                                    = (known after apply)
+      [32m+[0m[0m identifier                            = "nodeapp-db"
+      [32m+[0m[0m identifier_prefix                     = (known after apply)
+      [32m+[0m[0m instance_class                        = "db.t3.micro"
+      [32m+[0m[0m iops                                  = (known after apply)
+      [32m+[0m[0m kms_key_id                            = (known after apply)
+      [32m+[0m[0m latest_restorable_time                = (known after apply)
+      [32m+[0m[0m license_model                         = (known after apply)
+      [32m+[0m[0m listener_endpoint                     = (known after apply)
+      [32m+[0m[0m maintenance_window                    = (known after apply)
+      [32m+[0m[0m master_user_secret                    = (known after apply)
+      [32m+[0m[0m master_user_secret_kms_key_id         = (known after apply)
+      [32m+[0m[0m monitoring_interval                   = 0
+      [32m+[0m[0m monitoring_role_arn                   = (known after apply)
+      [32m+[0m[0m multi_az                              = false
+      [32m+[0m[0m nchar_character_set_name              = (known after apply)
+      [32m+[0m[0m network_type                          = (known after apply)
+      [32m+[0m[0m option_group_name                     = (known after apply)
+      [32m+[0m[0m parameter_group_name                  = (known after apply)
+      [32m+[0m[0m password                              = (sensitive value)
+      [32m+[0m[0m performance_insights_enabled          = false
+      [32m+[0m[0m performance_insights_kms_key_id       = (known after apply)
+      [32m+[0m[0m performance_insights_retention_period = (known after apply)
+      [32m+[0m[0m port                                  = (known after apply)
+      [32m+[0m[0m publicly_accessible                   = false
+      [32m+[0m[0m replica_mode                          = (known after apply)
+      [32m+[0m[0m replicas                              = (known after apply)
+      [32m+[0m[0m resource_id                           = (known after apply)
+      [32m+[0m[0m skip_final_snapshot                   = true
+      [32m+[0m[0m snapshot_identifier                   = (known after apply)
+      [32m+[0m[0m status                                = (known after apply)
+      [32m+[0m[0m storage_encrypted                     = true
+      [32m+[0m[0m storage_throughput                    = (known after apply)
+      [32m+[0m[0m storage_type                          = (known after apply)
+      [32m+[0m[0m tags                                  = {
+          [32m+[0m[0m "Name" = "nodeapp-rds"
+        }
+      [32m+[0m[0m tags_all                              = {
+          [32m+[0m[0m "Name" = "nodeapp-rds"
+        }
+      [32m+[0m[0m timezone                              = (known after apply)
+      [32m+[0m[0m username                              = "dbadmin"
+      [32m+[0m[0m vpc_security_group_ids                = (known after apply)
+    }
+
+[1m  # module.rds.aws_db_subnet_group.this[0m will be created
+[0m  [32m+[0m[0m resource "aws_db_subnet_group" "this" {
+      [32m+[0m[0m arn                     = (known after apply)
+      [32m+[0m[0m description             = "Managed by Terraform"
+      [32m+[0m[0m id                      = (known after apply)
+      [32m+[0m[0m name                    = "app-db-subnet-group"
+      [32m+[0m[0m name_prefix             = (known after apply)
+      [32m+[0m[0m subnet_ids              = (known after apply)
+      [32m+[0m[0m supported_network_types = (known after apply)
+      [32m+[0m[0m tags                    = {
+          [32m+[0m[0m "Name" = "App DB Subnet Group"
+        }
+      [32m+[0m[0m tags_all                = {
+          [32m+[0m[0m "Name" = "App DB Subnet Group"
+        }
+      [32m+[0m[0m vpc_id                  = (known after apply)
+    }
+
+[1m  # module.rds.aws_security_group.db_sg[0m will be created
+[0m  [32m+[0m[0m resource "aws_security_group" "db_sg" {
+      [32m+[0m[0m arn                    = (known after apply)
+      [32m+[0m[0m description            = "Allow traffic from EC2 only"
+      [32m+[0m[0m egress                 = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = [
+                  [32m+[0m[0m "0.0.0.0/0",
+                ]
+              [32m+[0m[0m from_port        = 0
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "-1"
+              [32m+[0m[0m security_groups  = []
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 0
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m id                     = (known after apply)
+      [32m+[0m[0m ingress                = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_blocks      = []
+              [32m+[0m[0m from_port        = 5432
+              [32m+[0m[0m ipv6_cidr_blocks = []
+              [32m+[0m[0m prefix_list_ids  = []
+              [32m+[0m[0m protocol         = "tcp"
+              [32m+[0m[0m security_groups  = (known after apply)
+              [32m+[0m[0m self             = false
+              [32m+[0m[0m to_port          = 5432
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m name                   = "db-sg"
+      [32m+[0m[0m name_prefix            = (known after apply)
+      [32m+[0m[0m owner_id               = (known after apply)
+      [32m+[0m[0m revoke_rules_on_delete = false
+      [32m+[0m[0m tags                   = {
+          [32m+[0m[0m "Name" = "db-sg"
+        }
+      [32m+[0m[0m tags_all               = {
+          [32m+[0m[0m "Name" = "db-sg"
+        }
+      [32m+[0m[0m vpc_id                 = (known after apply)
+    }
+
+[1m  # module.vpc.aws_eip.nat[0m will be created
+[0m  [32m+[0m[0m resource "aws_eip" "nat" {
+      [32m+[0m[0m allocation_id        = (known after apply)
+      [32m+[0m[0m arn                  = (known after apply)
+      [32m+[0m[0m association_id       = (known after apply)
+      [32m+[0m[0m carrier_ip           = (known after apply)
+      [32m+[0m[0m customer_owned_ip    = (known after apply)
+      [32m+[0m[0m domain               = (known after apply)
+      [32m+[0m[0m id                   = (known after apply)
+      [32m+[0m[0m instance             = (known after apply)
+      [32m+[0m[0m ipam_pool_id         = (known after apply)
+      [32m+[0m[0m network_border_group = (known after apply)
+      [32m+[0m[0m network_interface    = (known after apply)
+      [32m+[0m[0m private_dns          = (known after apply)
+      [32m+[0m[0m private_ip           = (known after apply)
+      [32m+[0m[0m ptr_record           = (known after apply)
+      [32m+[0m[0m public_dns           = (known after apply)
+      [32m+[0m[0m public_ip            = (known after apply)
+      [32m+[0m[0m public_ipv4_pool     = (known after apply)
+      [32m+[0m[0m tags_all             = (known after apply)
+      [32m+[0m[0m vpc                  = true
+    }
+
+[1m  # module.vpc.aws_internet_gateway.igw[0m will be created
+[0m  [32m+[0m[0m resource "aws_internet_gateway" "igw" {
+      [32m+[0m[0m arn      = (known after apply)
+      [32m+[0m[0m id       = (known after apply)
+      [32m+[0m[0m owner_id = (known after apply)
+      [32m+[0m[0m tags     = {
+          [32m+[0m[0m "Name" = "igw"
+        }
+      [32m+[0m[0m tags_all = {
+          [32m+[0m[0m "Name" = "igw"
+        }
+      [32m+[0m[0m vpc_id   = (known after apply)
+    }
+
+[1m  # module.vpc.aws_nat_gateway.nat[0m will be created
+[0m  [32m+[0m[0m resource "aws_nat_gateway" "nat" {
+      [32m+[0m[0m allocation_id                      = (known after apply)
+      [32m+[0m[0m association_id                     = (known after apply)
+      [32m+[0m[0m connectivity_type                  = "public"
+      [32m+[0m[0m id                                 = (known after apply)
+      [32m+[0m[0m network_interface_id               = (known after apply)
+      [32m+[0m[0m private_ip                         = (known after apply)
+      [32m+[0m[0m public_ip                          = (known after apply)
+      [32m+[0m[0m secondary_private_ip_address_count = (known after apply)
+      [32m+[0m[0m secondary_private_ip_addresses     = (known after apply)
+      [32m+[0m[0m subnet_id                          = (known after apply)
+      [32m+[0m[0m tags                               = {
+          [32m+[0m[0m "Name" = "nat"
+        }
+      [32m+[0m[0m tags_all                           = {
+          [32m+[0m[0m "Name" = "nat"
+        }
+    }
+
+[1m  # module.vpc.aws_route_table.private[0m will be created
+[0m  [32m+[0m[0m resource "aws_route_table" "private" {
+      [32m+[0m[0m arn              = (known after apply)
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m owner_id         = (known after apply)
+      [32m+[0m[0m propagating_vgws = (known after apply)
+      [32m+[0m[0m route            = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_block                 = "0.0.0.0/0"
+              [32m+[0m[0m nat_gateway_id             = (known after apply)
+                [90m# (11 unchanged attributes hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m tags             = {
+          [32m+[0m[0m "Name" = "private-rt"
+        }
+      [32m+[0m[0m tags_all         = {
+          [32m+[0m[0m "Name" = "private-rt"
+        }
+      [32m+[0m[0m vpc_id           = (known after apply)
+    }
+
+[1m  # module.vpc.aws_route_table.public[0m will be created
+[0m  [32m+[0m[0m resource "aws_route_table" "public" {
+      [32m+[0m[0m arn              = (known after apply)
+      [32m+[0m[0m id               = (known after apply)
+      [32m+[0m[0m owner_id         = (known after apply)
+      [32m+[0m[0m propagating_vgws = (known after apply)
+      [32m+[0m[0m route            = [
+          [32m+[0m[0m {
+              [32m+[0m[0m cidr_block                 = "0.0.0.0/0"
+              [32m+[0m[0m gateway_id                 = (known after apply)
+                [90m# (11 unchanged attributes hidden)[0m[0m
+            },
+        ]
+      [32m+[0m[0m tags             = {
+          [32m+[0m[0m "Name" = "public-rt"
+        }
+      [32m+[0m[0m tags_all         = {
+          [32m+[0m[0m "Name" = "public-rt"
+        }
+      [32m+[0m[0m vpc_id           = (known after apply)
+    }
+
+[1m  # module.vpc.aws_route_table_association.private_assoc[0][0m will be created
+[0m  [32m+[0m[0m resource "aws_route_table_association" "private_assoc" {
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m route_table_id = (known after apply)
+      [32m+[0m[0m subnet_id      = (known after apply)
+    }
+
+[1m  # module.vpc.aws_route_table_association.private_assoc[1][0m will be created
+[0m  [32m+[0m[0m resource "aws_route_table_association" "private_assoc" {
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m route_table_id = (known after apply)
+      [32m+[0m[0m subnet_id      = (known after apply)
+    }
+
+[1m  # module.vpc.aws_route_table_association.public_assoc[0][0m will be created
+[0m  [32m+[0m[0m resource "aws_route_table_association" "public_assoc" {
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m route_table_id = (known after apply)
+      [32m+[0m[0m subnet_id      = (known after apply)
+    }
+
+[1m  # module.vpc.aws_route_table_association.public_assoc[1][0m will be created
+[0m  [32m+[0m[0m resource "aws_route_table_association" "public_assoc" {
+      [32m+[0m[0m id             = (known after apply)
+      [32m+[0m[0m route_table_id = (known after apply)
+      [32m+[0m[0m subnet_id      = (known after apply)
+    }
+
+[1m  # module.vpc.aws_subnet.private[0][0m will be created
+[0m  [32m+[0m[0m resource "aws_subnet" "private" {
+      [32m+[0m[0m arn                                            = (known after apply)
+      [32m+[0m[0m assign_ipv6_address_on_creation                = false
+      [32m+[0m[0m availability_zone                              = "eu-north-1a"
+      [32m+[0m[0m availability_zone_id                           = (known after apply)
+      [32m+[0m[0m cidr_block                                     = "10.0.3.0/24"
+      [32m+[0m[0m enable_dns64                                   = false
+      [32m+[0m[0m enable_resource_name_dns_a_record_on_launch    = false
+      [32m+[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false
+      [32m+[0m[0m id                                             = (known after apply)
+      [32m+[0m[0m ipv6_cidr_block_association_id                 = (known after apply)
+      [32m+[0m[0m ipv6_native                                    = false
+      [32m+[0m[0m map_public_ip_on_launch                        = false
+      [32m+[0m[0m owner_id                                       = (known after apply)
+      [32m+[0m[0m private_dns_hostname_type_on_launch            = (known after apply)
+      [32m+[0m[0m tags                                           = {
+          [32m+[0m[0m "Name" = "private-subnet-1"
+        }
+      [32m+[0m[0m tags_all                                       = {
+          [32m+[0m[0m "Name" = "private-subnet-1"
+        }
+      [32m+[0m[0m vpc_id                                         = (known after apply)
+    }
+
+[1m  # module.vpc.aws_subnet.private[1][0m will be created
+[0m  [32m+[0m[0m resource "aws_subnet" "private" {
+      [32m+[0m[0m arn                                            = (known after apply)
+      [32m+[0m[0m assign_ipv6_address_on_creation                = false
+      [32m+[0m[0m availability_zone                              = "eu-north-1b"
+      [32m+[0m[0m availability_zone_id                           = (known after apply)
+      [32m+[0m[0m cidr_block                                     = "10.0.4.0/24"
+      [32m+[0m[0m enable_dns64                                   = false
+      [32m+[0m[0m enable_resource_name_dns_a_record_on_launch    = false
+      [32m+[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false
+      [32m+[0m[0m id                                             = (known after apply)
+      [32m+[0m[0m ipv6_cidr_block_association_id                 = (known after apply)
+      [32m+[0m[0m ipv6_native                                    = false
+      [32m+[0m[0m map_public_ip_on_launch                        = false
+      [32m+[0m[0m owner_id                                       = (known after apply)
+      [32m+[0m[0m private_dns_hostname_type_on_launch            = (known after apply)
+      [32m+[0m[0m tags                                           = {
+          [32m+[0m[0m "Name" = "private-subnet-2"
+        }
+      [32m+[0m[0m tags_all                                       = {
+          [32m+[0m[0m "Name" = "private-subnet-2"
+        }
+      [32m+[0m[0m vpc_id                                         = (known after apply)
+    }
+
+[1m  # module.vpc.aws_subnet.public[0][0m will be created
+[0m  [32m+[0m[0m resource "aws_subnet" "public" {
+      [32m+[0m[0m arn                                            = (known after apply)
+      [32m+[0m[0m assign_ipv6_address_on_creation                = false
+      [32m+[0m[0m availability_zone                              = "eu-north-1a"
+      [32m+[0m[0m availability_zone_id                           = (known after apply)
+      [32m+[0m[0m cidr_block                                     = "10.0.1.0/24"
+      [32m+[0m[0m enable_dns64                                   = false
+      [32m+[0m[0m enable_resource_name_dns_a_record_on_launch    = false
+      [32m+[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false
+      [32m+[0m[0m id                                             = (known after apply)
+      [32m+[0m[0m ipv6_cidr_block_association_id                 = (known after apply)
+      [32m+[0m[0m ipv6_native                                    = false
+      [32m+[0m[0m map_public_ip_on_launch                        = true
+      [32m+[0m[0m owner_id                                       = (known after apply)
+      [32m+[0m[0m private_dns_hostname_type_on_launch            = (known after apply)
+      [32m+[0m[0m tags                                           = {
+          [32m+[0m[0m "Name" = "public-subnet-1"
+        }
+      [32m+[0m[0m tags_all                                       = {
+          [32m+[0m[0m "Name" = "public-subnet-1"
+        }
+      [32m+[0m[0m vpc_id                                         = (known after apply)
+    }
+
+[1m  # module.vpc.aws_subnet.public[1][0m will be created
+[0m  [32m+[0m[0m resource "aws_subnet" "public" {
+      [32m+[0m[0m arn                                            = (known after apply)
+      [32m+[0m[0m assign_ipv6_address_on_creation                = false
+      [32m+[0m[0m availability_zone                              = "eu-north-1b"
+      [32m+[0m[0m availability_zone_id                           = (known after apply)
+      [32m+[0m[0m cidr_block                                     = "10.0.2.0/24"
+      [32m+[0m[0m enable_dns64                                   = false
+      [32m+[0m[0m enable_resource_name_dns_a_record_on_launch    = false
+      [32m+[0m[0m enable_resource_name_dns_aaaa_record_on_launch = false
+      [32m+[0m[0m id                                             = (known after apply)
+      [32m+[0m[0m ipv6_cidr_block_association_id                 = (known after apply)
+      [32m+[0m[0m ipv6_native                                    = false
+      [32m+[0m[0m map_public_ip_on_launch                        = true
+      [32m+[0m[0m owner_id                                       = (known after apply)
+      [32m+[0m[0m private_dns_hostname_type_on_launch            = (known after apply)
+      [32m+[0m[0m tags                                           = {
+          [32m+[0m[0m "Name" = "public-subnet-2"
+        }
+      [32m+[0m[0m tags_all                                       = {
+          [32m+[0m[0m "Name" = "public-subnet-2"
+        }
+      [32m+[0m[0m vpc_id                                         = (known after apply)
+    }
+
+[1m  # module.vpc.aws_vpc.main[0m will be created
+[0m  [32m+[0m[0m resource "aws_vpc" "main" {
+      [32m+[0m[0m arn                                  = (known after apply)
+      [32m+[0m[0m cidr_block                           = "10.0.0.0/16"
+      [32m+[0m[0m default_network_acl_id               = (known after apply)
+      [32m+[0m[0m default_route_table_id               = (known after apply)
+      [32m+[0m[0m default_security_group_id            = (known after apply)
+      [32m+[0m[0m dhcp_options_id                      = (known after apply)
+      [32m+[0m[0m enable_dns_hostnames                 = true
+      [32m+[0m[0m enable_dns_support                   = true
+      [32m+[0m[0m enable_network_address_usage_metrics = (known after apply)
+      [32m+[0m[0m id                                   = (known after apply)
+      [32m+[0m[0m instance_tenancy                     = "default"
+      [32m+[0m[0m ipv6_association_id                  = (known after apply)
+      [32m+[0m[0m ipv6_cidr_block                      = (known after apply)
+      [32m+[0m[0m ipv6_cidr_block_network_border_group = (known after apply)
+      [32m+[0m[0m main_route_table_id                  = (known after apply)
+      [32m+[0m[0m owner_id                             = (known after apply)
+      [32m+[0m[0m tags                                 = {
+          [32m+[0m[0m "Name" = "nodejs-vpc"
+        }
+      [32m+[0m[0m tags_all                             = {
+          [32m+[0m[0m "Name" = "nodejs-vpc"
+        }
+    }
+
+[1mPlan:[0m 29 to add, 0 to change, 0 to destroy.
+[0m
+Changes to Outputs:
+  [32m+[0m[0m vpc_id = (known after apply)
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mArgument is deprecated[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  with module.vpc.aws_eip.nat,
+[33m│[0m [0m  on modules/vpc/main.tf line 62, in resource "aws_eip" "nat":
+[33m│[0m [0m  62:   vpc = [4mtrue[0m[0m
+[33m│[0m [0m
+[33m│[0m [0mvpc is deprecated. Use domain instead.
+[33m│[0m [0m
+[33m│[0m [0m(and one more similar warning elsewhere)
+[33m╵[0m[0m
+[90m
+─────────────────────────────────────────────────────────────────────────────[0m
+
+Saved the plan to: tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "tfplan"
++ terraform apply -input=false -auto-approve tfplan
+[0m[1mmodule.iam.aws_iam_role.ec2_role: Creating...[0m[0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_vpc.main: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_eip.nat: Creating...[0m[0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Creation complete after 0s [id=node-demo-app][0m
+[0m[1mmodule.vpc.aws_eip.nat: Creation complete after 0s [id=eipalloc-06dbe70632ba2fec8][0m
+[0m[1mmodule.iam.aws_iam_role.ec2_role: Creation complete after 0s [id=ec2-role-for-app][0m
+[0m[1mmodule.iam.aws_iam_role_policy_attachment.ecr: Creating...[0m[0m
+[0m[1mmodule.iam.aws_iam_role_policy_attachment.ssm: Creating...[0m[0m
+[0m[1mmodule.iam.aws_iam_instance_profile.this: Creating...[0m[0m
+[0m[1mmodule.iam.aws_iam_role_policy_attachment.ecr: Creation complete after 1s [id=ec2-role-for-app-20250619030722569800000001][0m
+[0m[1mmodule.iam.aws_iam_role_policy_attachment.ssm: Creation complete after 1s [id=ec2-role-for-app-20250619030722748400000002][0m
+[0m[1mmodule.iam.aws_iam_instance_profile.this: Creation complete after 7s [id=ec2-instance-profile][0m
+[0m[1mmodule.vpc.aws_vpc.main: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_vpc.main: Creation complete after 11s [id=vpc-08bfc06193f2dd3c8][0m
+[0m[1mmodule.vpc.aws_internet_gateway.igw: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.public[0]: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.private[0]: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.private[1]: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.public[1]: Creating...[0m[0m
+[0m[1mmodule.alb.aws_lb_target_group.app_tg: Creating...[0m[0m
+[0m[1mmodule.alb.aws_security_group.alb_sg: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_internet_gateway.igw: Creation complete after 0s [id=igw-0dc2f9a357be48e91][0m
+[0m[1mmodule.vpc.aws_route_table.public: Creating...[0m[0m
+[0m[1mmodule.alb.aws_lb_target_group.app_tg: Creation complete after 0s [id=arn:aws:elasticloadbalancing:eu-north-1:091110283484:targetgroup/app-tg/1f9f2a15eb9bc8a7][0m
+[0m[1mmodule.vpc.aws_subnet.private[0]: Creation complete after 1s [id=subnet-08f672f8c1d8aca26][0m
+[0m[1mmodule.vpc.aws_route_table.public: Creation complete after 1s [id=rtb-0ec22b0854920199c][0m
+[0m[1mmodule.alb.aws_security_group.alb_sg: Creation complete after 2s [id=sg-08e5482811697ed79][0m
+[0m[1mmodule.ec2.aws_security_group.app_sg: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.private[1]: Creation complete after 2s [id=subnet-0766aab6155e54c2c][0m
+[0m[1mmodule.rds.aws_db_subnet_group.this: Creating...[0m[0m
+[0m[1mmodule.rds.aws_db_subnet_group.this: Creation complete after 1s [id=app-db-subnet-group][0m
+[0m[1mmodule.ec2.aws_security_group.app_sg: Creation complete after 2s [id=sg-0c5881fc2c6ef2ce6][0m
+[0m[1mmodule.rds.aws_security_group.db_sg: Creating...[0m[0m
+[0m[1mmodule.ec2.aws_launch_template.app: Creating...[0m[0m
+[0m[1mmodule.rds.aws_security_group.db_sg: Creation complete after 2s [id=sg-0e159a563ee4d7e99][0m
+[0m[1mmodule.rds.aws_db_instance.this: Creating...[0m[0m
+[0m[1mmodule.ec2.aws_launch_template.app: Creation complete after 6s [id=lt-0c6dd3628ae9ef820][0m
+[0m[1mmodule.ec2.aws_autoscaling_group.app_asg: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.public[0]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_subnet.public[1]: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_subnet.public[0]: Creation complete after 11s [id=subnet-0e52342faf482a1cc][0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_subnet.public[1]: Creation complete after 16s [id=subnet-0a8b3fab1c155c4f8][0m
+[0m[1mmodule.vpc.aws_route_table_association.public_assoc[0]: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_route_table_association.public_assoc[1]: Creating...[0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_route_table_association.public_assoc[0]: Creation complete after 0s [id=rtbassoc-02b5cd147b1d4b16f][0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_route_table_association.public_assoc[1]: Creation complete after 0s [id=rtbassoc-08f2cd72ebd14df2a][0m
+[0m[1mmodule.ec2.aws_autoscaling_group.app_asg: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.ec2.aws_autoscaling_group.app_asg: Creation complete after 15s [id=terraform-20250619030742577800000006][0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [10s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [20s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [30s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [40s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [50s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [1m0s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [1m10s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [1m20s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [1m30s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [1m30s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [1m30s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [1m40s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Still creating... [1m40s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_nat_gateway.nat: Creation complete after 1m43s [id=nat-0166047b9ec696e80][0m
+[0m[1mmodule.vpc.aws_route_table.private: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_route_table.private: Creation complete after 1s [id=rtb-08f6519376d1ef78e][0m
+[0m[1mmodule.vpc.aws_route_table_association.private_assoc[0]: Creating...[0m[0m
+[0m[1mmodule.vpc.aws_route_table_association.private_assoc[1]: Creating...[0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [1m40s elapsed][0m[0m
+[0m[1mmodule.vpc.aws_route_table_association.private_assoc[0]: Creation complete after 1s [id=rtbassoc-05ea08a261334b5e8][0m
+[0m[1mmodule.vpc.aws_route_table_association.private_assoc[1]: Creation complete after 1s [id=rtbassoc-0c74b485693fe47c1][0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [1m50s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [1m50s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [2m0s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [2m0s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [2m10s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [2m10s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [2m20s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [2m20s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [2m30s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [2m30s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [2m40s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [2m40s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [2m50s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [2m50s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [3m0s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Still creating... [3m0s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [3m10s elapsed][0m[0m
+[0m[1mmodule.alb.aws_lb.app_alb: Creation complete after 3m1s [id=arn:aws:elasticloadbalancing:eu-north-1:091110283484:loadbalancer/app/app-alb/6600b342f8b070ba][0m
+[0m[1mmodule.alb.aws_lb_listener.http: Creating...[0m[0m
+[0m[1mmodule.alb.aws_lb_listener.http: Creation complete after 0s [id=arn:aws:elasticloadbalancing:eu-north-1:091110283484:listener/app/app-alb/6600b342f8b070ba/b43bc37be02c068a][0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [3m20s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [3m30s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [3m40s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [3m50s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [4m0s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [4m10s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [4m20s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [4m30s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [4m40s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [4m50s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [5m0s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [5m10s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [5m20s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [5m30s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [5m40s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Still creating... [5m50s elapsed][0m[0m
+[0m[1mmodule.rds.aws_db_instance.this: Creation complete after 5m54s [id=db-EFBXT3IJR7KF4QWF2PJW57SH6U][0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mArgument is deprecated[0m
+[33m│[0m [0m
+[33m│[0m [0m[0m  with module.vpc.aws_eip.nat,
+[33m│[0m [0m  on modules/vpc/main.tf line 62, in resource "aws_eip" "nat":
+[33m│[0m [0m  62:   vpc = [4mtrue[0m[0m
+[33m│[0m [0m
+[33m│[0m [0mvpc is deprecated. Use domain instead.
+[33m╵[0m[0m
+[0m[1m[32m
+Apply complete! Resources: 29 added, 0 changed, 0 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mvpc_id = "vpc-08bfc06193f2dd3c8"
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Docker Build & Push to ECR)
+[Pipeline] withCredentials
+Masking supported pattern matches of $AWS_SECRET_ACCESS_KEY
+[Pipeline] {
+[Pipeline] dir
+Running in /var/lib/jenkins/workspace/NodeApp-CICD/node-demo-app
+[Pipeline] {
+[Pipeline] sh
++ aws ecr get-login-password --region eu-north-1
++ docker login --username AWS --password-stdin 091110283484.dkr.ecr.eu-north-1.amazonaws.com/node-demo-app
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credential-stores
+
+Login Succeeded
++ docker build -t node-demo-app:v1.0.19 .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon    734MB
+
+Step 1/9 : FROM node:20-alpine
+ ---> 367a28bb5439
+Step 2/9 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> d2a149018982
+Step 3/9 : COPY package*.json ./
+ ---> Using cache
+ ---> 9acc361cb88d
+Step 4/9 : RUN npm ci --omit=dev
+ ---> Using cache
+ ---> eea096915521
+Step 5/9 : COPY .  .
+ ---> 68288db38684
+Step 6/9 : EXPOSE 3000
+ ---> Running in c31a0a07aa87
+ ---> Removed intermediate container c31a0a07aa87
+ ---> 657f8c5db025
+Step 7/9 : RUN addgroup app && adduser -S -G app app
+ ---> Running in 804363bd0ac5
+ ---> Removed intermediate container 804363bd0ac5
+ ---> e1c88b019ae8
+Step 8/9 : USER app
+ ---> Running in a1767e89b847
+ ---> Removed intermediate container a1767e89b847
+ ---> 60cea051129c
+Step 9/9 : CMD [ "node", "src/index.js" ]
+ ---> Running in f4dc90d28129
+ ---> Removed intermediate container f4dc90d28129
+ ---> 4d9e272a7c51
+Successfully built 4d9e272a7c51
+Successfully tagged node-demo-app:v1.0.19
++ docker tag node-demo-app:v1.0.19 091110283484.dkr.ecr.eu-north-1.amazonaws.com/node-demo-app:v1.0.19
++ docker push 091110283484.dkr.ecr.eu-north-1.amazonaws.com/node-demo-app:v1.0.19
+The push refers to repository [091110283484.dkr.ecr.eu-north-1.amazonaws.com/node-demo-app]
+8384aa471c65: Preparing
+020387e55c71: Preparing
+e5f680f9e950: Preparing
+f272f2af34ee: Preparing
+2fdf0a1e40de: Preparing
+0be4abac61b0: Preparing
+54374c4c648f: Preparing
+0fd19e03276d: Preparing
+fd2758d7a50e: Preparing
+0be4abac61b0: Waiting
+54374c4c648f: Waiting
+0fd19e03276d: Waiting
+fd2758d7a50e: Waiting
+8384aa471c65: Pushed
+2fdf0a1e40de: Pushed
+f272f2af34ee: Pushed
+e5f680f9e950: Pushed
+0be4abac61b0: Pushed
+54374c4c648f: Pushed
+fd2758d7a50e: Pushed
+0fd19e03276d: Pushed
+020387e55c71: Pushed
+v1.0.19: digest: sha256:e2284b8934079401370145468864feebd3d81e2cf0f1493d384d1fa93fd4e085 size: 2205
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+eployment successful.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
